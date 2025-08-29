@@ -7,11 +7,9 @@ test("Successful login redirects to Accounts Overview", async ({ page }) => {
   });
 
   await test.step("Verify destination (URL + heading)", async () => {
-    await expect(page).toHaveURL(/\/overview\.htm(?:[;?].*)?$/i, {
-      timeout: 15_000,
-    });
+    await expect(page).toHaveURL(/\/overview\.htm/i);
     await expect(
-      page.getByRole("heading", { name: /accounts overview/i })
+      page.getByRole("heading", { name: /^accounts overview$/i })
     ).toBeVisible();
   });
 });

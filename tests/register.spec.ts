@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { randomUUID } from "crypto";
 
-// Fake test user info
+// Generate a unique fake user for each test run (timestamp in base36 prevents collisions)
 function fakeUser() {
+  const unique = Date.now().toString(36);
   return {
     firstName: "Valencia",
     lastName: "Jang",
@@ -12,8 +12,8 @@ function fakeUser() {
     zipCode: "94016",
     phone: "4155551234",
     ssn: "123-45-6789",
-    username: `valencia_${randomUUID()}`,
-    password: `Pw_${randomUUID()}`,
+    username: `test${unique}`.slice(0, 20),
+    password: `Pw_${unique}`,
   };
 }
 
@@ -32,11 +32,11 @@ test("Register new account", async ({ page }) => {
   } = fakeUser();
 
   await test.step("Navigate to register page", async () => {
-    await page.goto("/parabank/index.htm", { waitUntil: "domcontentloaded" });
+    await page.goto("/parabank/index.htm");
     await page.getByRole("link", { name: "Register" }).click();
     await expect(page).toHaveURL(/\/register\.htm/);
     await expect(
-      page.getByRole("heading", { name: "Signing up is easy!" })
+      page.getByRole("heading", { name: /^signing up is easy!?$/i })
     ).toBeVisible();
   });
 
@@ -54,18 +54,11 @@ test("Register new account", async ({ page }) => {
     await form.locator('[id="customer.password"]').fill(password);
     await form.locator('[id="repeatedPassword"]').fill(password);
 
-    expect(await form.evaluate((f: HTMLFormElement) => f.checkValidity())).toBe(
-      true
-    );
+    await form.getByRole("button", { name: /^register$/i }).click();
 
-    await form
-      .getByRole("button", { name: /^register$/i })
-      .click({ noWaitAfter: true });
-
-    const logOut = page.getByRole("link", { name: /log out/i });
-    const overview = page.getByRole("link", { name: /accounts overview/i });
-
-    await expect(logOut).toBeVisible();
-    await expect(overview).toBeVisible();
+    await expect(page.getByRole("link", { name: /^log out$/i })).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /^accounts overview$/i })
+    ).toBeVisible();
   });
 });

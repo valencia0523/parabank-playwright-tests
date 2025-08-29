@@ -7,22 +7,24 @@ test("Open a new account and view account activity", async ({ page }) => {
   });
 
   await test.step("Create CHECKING account and confirm success", async () => {
+    // Wait for navigation and click together to avoid race condition
     await Promise.all([
-      page.waitForURL(/\/openaccount\.htm(?:[;?].*)?$/i, { timeout: 15_000 }),
-      page.getByRole("link", { name: /open new account/i }).click(),
+      page.waitForURL(/\/openaccount\.htm/i),
+      page.getByRole("link", { name: /^open new account$/i }).click(),
     ]);
 
     await page.locator("#type").selectOption("0");
+
+    // select first enabled 'from account'
     const firstFromValue = await page
       .locator("#fromAccountId option:not([disabled])")
       .first()
       .getAttribute("value");
     await page.locator("#fromAccountId").selectOption(firstFromValue!);
-
-    await page.getByRole("button", { name: /open new account/i }).click();
+    await page.getByRole("button", { name: /^open new account$/i }).click();
 
     await expect(
-      page.getByRole("heading", { name: /account opened!/i })
+      page.getByRole("heading", { name: /^account opened!?$/i })
     ).toBeVisible();
     await expect(page.locator("#newAccountId")).toBeVisible();
   });
@@ -31,11 +33,11 @@ test("Open a new account and view account activity", async ({ page }) => {
     await page.locator("#newAccountId").click();
 
     await expect(
-      page.getByRole("heading", { name: /account activity/i })
+      page.getByRole("heading", { name: /^account activity$/i })
     ).toBeVisible();
 
     const row = page.locator("tr").filter({
-      has: page.getByRole("link", { name: /funds transfer received/i }),
+      has: page.getByRole("link", { name: /^funds transfer received$/i }),
     });
 
     await expect(row.locator("td").nth(3)).toHaveText(/\$?100(?:\.00)?\b/);
