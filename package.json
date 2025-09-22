@@ -3,7 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "auth": "ts-node src/fixtures/auth.ts",
+    "auth:refresh": "cross-env FORCE_AUTH=1 ts-node src/fixtures/auth.ts",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report reports/playwright-report"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

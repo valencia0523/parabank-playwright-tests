@@ -1,0 +1,143 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - link:
+        - /url: admin.htm
+        - img [ref=e4] [cursor=pointer]
+      - link "ParaBank":
+        - /url: index.htm
+        - img "ParaBank" [ref=e5] [cursor=pointer]
+      - paragraph [ref=e6]: Experience the difference
+    - generic [ref=e7]:
+      - list [ref=e8]:
+        - listitem [ref=e9]: Solutions
+        - listitem [ref=e10]:
+          - link "About Us" [ref=e11] [cursor=pointer]:
+            - /url: about.htm
+        - listitem [ref=e12]:
+          - link "Services" [ref=e13] [cursor=pointer]:
+            - /url: services.htm
+        - listitem [ref=e14]:
+          - link "Products" [ref=e15] [cursor=pointer]:
+            - /url: http://www.parasoft.com/jsp/products.jsp
+        - listitem [ref=e16]:
+          - link "Locations" [ref=e17] [cursor=pointer]:
+            - /url: http://www.parasoft.com/jsp/pr/contacts.jsp
+        - listitem [ref=e18]:
+          - link "Admin Page" [ref=e19] [cursor=pointer]:
+            - /url: admin.htm
+      - list [ref=e20]:
+        - listitem [ref=e21]:
+          - link "home" [ref=e22] [cursor=pointer]:
+            - /url: index.htm
+        - listitem [ref=e23]:
+          - link "about" [ref=e24] [cursor=pointer]:
+            - /url: about.htm
+        - listitem [ref=e25]:
+          - link "contact" [ref=e26] [cursor=pointer]:
+            - /url: contact.htm
+    - generic [ref=e27]:
+      - generic [ref=e28]:
+        - heading "Customer Login" [level=2] [ref=e29]
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - paragraph [ref=e32]:
+              - generic [ref=e33]: Username
+            - textbox [active] [ref=e35]
+            - paragraph [ref=e36]:
+              - generic [ref=e37]: Password
+            - textbox [ref=e39]
+            - button "Log In" [ref=e41] [cursor=pointer]
+          - paragraph [ref=e42]:
+            - link "Forgot login info?" [ref=e43] [cursor=pointer]:
+              - /url: lookup.htm
+          - paragraph [ref=e44]:
+            - link "Register" [ref=e45] [cursor=pointer]:
+              - /url: register.htm
+      - generic [ref=e46]:
+        - list [ref=e48]:
+          - listitem [ref=e49]: ATM Services
+          - listitem [ref=e50]:
+            - link "Withdraw Funds" [ref=e51] [cursor=pointer]:
+              - /url: services/ParaBank?wsdl
+          - listitem [ref=e52]:
+            - link "Transfer Funds" [ref=e53] [cursor=pointer]:
+              - /url: services/ParaBank?wsdl
+          - listitem [ref=e54]:
+            - link "Check Balances" [ref=e55] [cursor=pointer]:
+              - /url: services/ParaBank?wsdl
+          - listitem [ref=e56]:
+            - link "Make Deposits" [ref=e57] [cursor=pointer]:
+              - /url: services/ParaBank?wsdl
+        - list [ref=e58]:
+          - listitem [ref=e59]: Online Services
+          - listitem [ref=e60]:
+            - link "Bill Pay" [ref=e61] [cursor=pointer]:
+              - /url: services/bank?_wadl&_type=xml
+          - listitem [ref=e62]:
+            - link "Account History" [ref=e63] [cursor=pointer]:
+              - /url: services/bank?_wadl&_type=xml
+          - listitem [ref=e64]:
+            - link "Transfer Funds" [ref=e65] [cursor=pointer]:
+              - /url: services/bank?_wadl&_type=xml
+        - paragraph [ref=e66]:
+          - link "Read More" [ref=e67] [cursor=pointer]:
+            - /url: services.htm
+        - heading "Latest News" [level=4] [ref=e68]
+        - list [ref=e69]:
+          - listitem [ref=e70]: 09/22/2025
+          - listitem [ref=e71]:
+            - link "ParaBank Is Now Re-Opened" [ref=e72] [cursor=pointer]:
+              - /url: news.htm#6
+          - listitem [ref=e73]:
+            - link "New! Online Bill Pay" [ref=e74] [cursor=pointer]:
+              - /url: news.htm#5
+          - listitem [ref=e75]:
+            - link "New! Online Account Transfers" [ref=e76] [cursor=pointer]:
+              - /url: news.htm#4
+        - paragraph [ref=e77]:
+          - link "Read More" [ref=e78] [cursor=pointer]:
+            - /url: news.htm
+  - generic [ref=e80]:
+    - list [ref=e81]:
+      - listitem [ref=e82]:
+        - link "Home" [ref=e83] [cursor=pointer]:
+          - /url: index.htm
+        - text: "|"
+      - listitem [ref=e84]:
+        - link "About Us" [ref=e85] [cursor=pointer]:
+          - /url: about.htm
+        - text: "|"
+      - listitem [ref=e86]:
+        - link "Services" [ref=e87] [cursor=pointer]:
+          - /url: services.htm
+        - text: "|"
+      - listitem [ref=e88]:
+        - link "Products" [ref=e89] [cursor=pointer]:
+          - /url: http://www.parasoft.com/jsp/products.jsp
+        - text: "|"
+      - listitem [ref=e90]:
+        - link "Locations" [ref=e91] [cursor=pointer]:
+          - /url: http://www.parasoft.com/jsp/pr/contacts.jsp
+        - text: "|"
+      - listitem [ref=e92]:
+        - link "Forum" [ref=e93] [cursor=pointer]:
+          - /url: http://forums.parasoft.com/
+        - text: "|"
+      - listitem [ref=e94]:
+        - link "Site Map" [ref=e95] [cursor=pointer]:
+          - /url: sitemap.htm
+        - text: "|"
+      - listitem [ref=e96]:
+        - link "Contact Us" [ref=e97] [cursor=pointer]:
+          - /url: contact.htm
+    - paragraph [ref=e98]: © Parasoft. All rights reserved.
+    - list [ref=e99]:
+      - listitem [ref=e100]: "Visit us at:"
+      - listitem [ref=e101]:
+        - link "www.parasoft.com" [ref=e102] [cursor=pointer]:
+          - /url: http://www.parasoft.com/
+```

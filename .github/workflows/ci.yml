@@ -1,0 +1,67 @@
+name: Playwright CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Generate auth state
+        env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          PARABANK_USER: ${{ secrets.PARABANK_USER }}
+          PARABANK_PASSWORD: ${{ secrets.PARABANK_PASSWORD }}
+          FORCE_AUTH: '1'
+        run: npx ts-node src/fixtures/auth.ts
+
+      - name: Run Playwright tests (matrix browser)
+        env:
+          BASE_URL: ${{ secrets.BASE_URL || 'https://parabank.parasoft.com/parabank' }}
+          PARABANK_USER: ${{ secrets.PARABANK_USER || '' }}
+          PARABANK_PASSWORD: ${{ secrets.PARABANK_PASSWORD || '' }}
+          CUSTOMER_ID: ${{ secrets.CUSTOMER_ID || '12212' }}
+        run: |
+          npx playwright test \
+            --project="${{ matrix.browser }}"
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: reports/playwright-report
+          retention-days: 7
+
+      - name: Upload raw artifacts (screenshots/traces/videos)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.browser }}
+          path: reports/test-results
+          retention-days: 7
