@@ -1,5 +1,7 @@
 # Parabank Playwright Tests
 
+[![CI](https://github.com/valencia0523/parabank-playwright-tests/actions/workflows/ci.yml/badge.svg)](https://github.com/valencia0523/parabank-playwright-tests/actions/workflows/ci.yml)
+
 UI & API test automation project using Playwright + TypeScript.
 This repository demonstrates real-world QA engineering practices, including E2E browser testing, API validation, authentication state management, Page Object Model (POM), and GitHub Actions CI integration.
 
@@ -9,7 +11,6 @@ This repository demonstrates real-world QA engineering practices, including E2E 
 
 - **Login & session persistence**
 - **Open new account & verify details**
-- **User registration** (with POM `RegisterPage`)
 
 ### API Tests
 
@@ -40,11 +41,11 @@ This repository demonstrates real-world QA engineering practices, including E2E 
 parabank-playwright-tests/
 ├── src/
 │   ├── fixtures/  # auth.json, auth.ts (login session helper)
-│   ├── pages/  # Page Object Model classes (LoginPage, AccountsPage, RegisterPage)
+│   ├── pages/  # Page Object Model classes (LoginPage, AccountsPage)
 │   ├── tests/
 │   │ ├── e2e/  # UI/E2E test specs
 │   │ └── api/  # API test specs
-│   └── utils/  # selectors.ts (shared locators)
+│   └── utils/  # assertCreds.ts, env.ts, helpers
 ├── reports/  # test-results & playwright-report
 ├── .env  # BASE_URL, credentials (local use)
 ├── playwright.config.ts  # Playwright config (root)
@@ -68,9 +69,10 @@ Create a `.env` file in the project root:
 
 ```env
 BASE_URL=https://parabank.parasoft.com/parabank
-PARABANK_USER=john
-PARABANK_PASSWORD=demo
+PARABANK_USER=your_username
+PARABANK_PASSWORD=your_password
 CUSTOMER_ID=12212
+FORCE_AUTH=0
 ```
 
 ### 3. Generate login session

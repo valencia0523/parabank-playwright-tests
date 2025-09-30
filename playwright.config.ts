@@ -1,16 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
+import { BASE_URL, AUTH_STATE_PATH, FORCE_AUTH } from './src/utils/env';
 
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-const BASE_URL =
-  process.env.BASE_URL ?? 'https://parabank.parasoft.com/parabank';
 const CI = !!process.env.CI;
-
-const storageStatePath = path.resolve(__dirname, 'src/fixtures/auth.json');
-const hasAuthState = fs.existsSync(storageStatePath);
+const hasAuthState = !FORCE_AUTH && fs.existsSync(AUTH_STATE_PATH);
 
 export default defineConfig({
   testDir: path.resolve(__dirname, 'src/tests'),
@@ -34,7 +28,7 @@ export default defineConfig({
 
   use: {
     baseURL: BASE_URL,
-    storageState: hasAuthState ? storageStatePath : undefined,
+    storageState: hasAuthState ? AUTH_STATE_PATH : undefined,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
@@ -43,18 +37,9 @@ export default defineConfig({
   },
 
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
 
   outputDir: path.resolve(__dirname, 'reports/test-results'),

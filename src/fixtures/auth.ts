@@ -1,65 +1,78 @@
-import { chromium, expect } from '@playwright/test';
+import { chromium } from 'playwright';
 import path from 'path';
 import fs from 'fs';
-import dotenv from 'dotenv';
+import {
+  BASE_URL,
+  USERNAME,
+  PASSWORD,
+  FORCE_AUTH,
+  HEADLESS,
+  AUTH_STATE_PATH,
+} from '../utils/env';
+import { LoginPage } from '../pages/LoginPage';
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// Ensure parent directory exists before writing files
+function ensureDirFor(filePath: string) {
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+}
 
-export const AUTH_STATE_PATH = path.resolve(__dirname, 'auth.json');
-
-const BASE_URL =
-  process.env.BASE_URL ?? 'https://parabank.parasoft.com/parabank';
-const USERNAME = process.env.PARABANK_USER ?? '';
-const PASSWORD = process.env.PARABANK_PASSWORD ?? '';
-const FORCE_AUTH = process.env.FORCE_AUTH === '1';
-
-export async function ensureAuthState(): Promise<string> {
+// Fail early if credentials are not set
+function assertEnv() {
   if (!USERNAME || !PASSWORD) {
-    throw new Error(
-      '❌ Missing credentials. Please set PARABANK_USER and PARABANK_PASSWORD in .env'
-    );
+    throw new Error('Missing credentials: Create credentials in .env');
   }
+}
 
+// Main helper to guarantee a valid Playwright auth state
+export async function ensureAuthState() {
+  assertEnv();
+
+  // Reuse existing auth state unless FORCE_AUTH is set
   if (!FORCE_AUTH && fs.existsSync(AUTH_STATE_PATH)) {
     return AUTH_STATE_PATH;
   }
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
+  const browser = await chromium.launch({ headless: HEADLESS });
+  const context = await browser.newContext({ baseURL: BASE_URL });
   const page = await context.newPage();
 
   try {
-    await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
+    // Perform login via Page Object
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(USERNAME, PASSWORD);
 
-    await page.fill('input[name="username"]', USERNAME);
-    await page.fill('input[name="password"]', PASSWORD);
-
-    await Promise.all([
-      page.waitForURL(/overview\.htm/i), // 최신 방식
-      page.click('input[type="submit"][value="Log In"], input[type="submit"]'),
-    ]);
-
-    await expect(page).toHaveURL(/overview\.htm/i);
-    await expect(page.locator('h1, h2, h3')).toContainText(
-      /Accounts Overview/i
-    );
-
+    // Persist storage state for later test runs
+    ensureDirFor(AUTH_STATE_PATH);
     await context.storageState({ path: AUTH_STATE_PATH });
-
     return AUTH_STATE_PATH;
+  } catch (error) {
+    try {
+      // Capture screenshot for debugging failed login attempts
+      ensureDirFor('reports/test-results');
+      await page.screenshot({
+        path: 'reports/test-results/auth-fail.png',
+        fullPage: true,
+      });
+    } catch {
+      // ignore secondary screenshot errors
+    }
+    throw error;
   } finally {
     await browser.close();
   }
 }
 
+// CLI entry point: allows running this script directly (e.g. `ts-node auth.ts`)
 if (require.main === module) {
   ensureAuthState()
     .then((p) => {
-      console.log(`✅ Auth state saved at: ${p}`);
+      console.log(`Auth state saved at: ${p}`);
       process.exit(0);
     })
     .catch((err) => {
-      console.error('❌ Failed to create auth state:', err);
+      console.log('Failed to create auth state:\n,', err?.message ?? err);
       process.exit(1);
     });
 }
