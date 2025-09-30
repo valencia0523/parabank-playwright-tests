@@ -38,7 +38,7 @@ jobs:
           PARABANK_USER: ${{ secrets.PARABANK_USER }}
           PARABANK_PASSWORD: ${{ secrets.PARABANK_PASSWORD }}
           FORCE_AUTH: '1'
-        run: npx ts-node src/fixtures/auth.ts
+        run: node -r ts-node/register/transpile-only src/fixtures/auth.ts
 
       - name: Run Playwright tests (matrix browser)
         env:
