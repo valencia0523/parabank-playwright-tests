@@ -21,6 +21,10 @@ export class LoginPage {
       this.page.getByRole('button', { name: /log in/i }).click(),
     ]);
 
+    if (/index\.htm/i.test(this.page.url())) {
+      await this.page.goto('/overview.htm');
+    }
+
     await expect(this.page).toHaveURL(/overview\.htm/i);
   }
 

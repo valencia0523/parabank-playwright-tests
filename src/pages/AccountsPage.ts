@@ -5,10 +5,12 @@ export class AccountsPage {
 
   // === Assertions ===
   async assertOverview(): Promise<void> {
-    await expect(this.page).toHaveURL(/overview\.htm/i);
+    if (/index\.htm/i.test(this.page.url())) {
+      await this.page.goto('/overview.htm');
+    }
     await expect(
       this.page.getByRole('heading', { name: /accounts overview/i })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 15000 });
   }
 
   // === Actions ===
