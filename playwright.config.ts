@@ -9,7 +9,7 @@ const hasAuthState = !FORCE_AUTH && fs.existsSync(AUTH_STATE_PATH);
 export default defineConfig({
   testDir: path.resolve(__dirname, 'src/tests'),
   timeout: 30_000,
-  expect: { timeout: 5_000 },
+  expect: { timeout: CI ? 10_000 : 5_000 },
 
   fullyParallel: true,
   forbidOnly: CI,
