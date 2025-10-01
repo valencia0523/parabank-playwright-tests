@@ -1,7 +1,5 @@
 # Parabank Playwright Tests
 
-[![CI](https://github.com/valencia0523/parabank-playwright-tests/actions/workflows/ci.yml/badge.svg)](https://github.com/valencia0523/parabank-playwright-tests/actions/workflows/ci.yml)
-
 UI & API test automation project using Playwright + TypeScript.
 This repository demonstrates real-world QA engineering practices, including E2E browser testing, API validation, authentication state management, Page Object Model (POM), and GitHub Actions CI integration.
 
@@ -127,8 +125,11 @@ The project includes a ready-to-use GitHub Actions workflow:
 
 ### What it does
 
-- Runs on push, pull requests, and nightly schedule (02:00 UTC)
-- Executes tests on Chromium, Firefox, WebKit (matrix)
+- **Stable job**: runs on push/PR (typecheck, lint, build). Always green.
+- **Demo E2E job**: runs manually (workflow_dispatch) or optionally on schedule.
+  Targets the ParaBank public demo site, which can sometimes be unavailable.
+  To avoid false negatives, this job is marked continue-on-error in CI.
+
 - Uploads:
   - HTML reports
   - Raw artifacts (traces, screenshots, videos)
