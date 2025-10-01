@@ -16,6 +16,9 @@ jobs:
       matrix:
         browser: [chromium, firefox, webkit]
 
+    env:
+      AUTH_STATE_PATH: reports/.auth/storageState.json
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,23 +35,37 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Generate auth state
+      - name: Check required env
         env:
           BASE_URL: ${{ secrets.BASE_URL }}
           PARABANK_USER: ${{ secrets.PARABANK_USER }}
           PARABANK_PASSWORD: ${{ secrets.PARABANK_PASSWORD }}
+        run: |
+          test -n "$BASE_URL" || { echo "Missing BASE_URL"; exit 1; }
+          test -n "$PARABANK_USER" || { echo "Missing PARABANK_USER"; exit 1; }
+          test -n "$PARABANK_PASSWORD" || { echo "Missing PARABANK_PASSWORD"; exit 1; }
+
+      - name: Generate auth state
+        env:
+          TS_NODE_PROJECT: tsconfig.json
+          BASE_URL: ${{ secrets.BASE_URL }}
+          PARABANK_USER: ${{ secrets.PARABANK_USER }}
+          PARABANK_PASSWORD: ${{ secrets.PARABANK_PASSWORD }}
+          AUTH_STATE_PATH: ${{ env.AUTH_STATE_PATH }}
           FORCE_AUTH: '1'
-        run: node -r ts-node/register/transpile-only src/fixtures/auth.ts
+        run: |
+          mkdir -p "$(dirname "$AUTH_STATE_PATH")"
+          node -r ts-node/register/transpile-only src/fixtures/auth.ts
 
       - name: Run Playwright tests (matrix browser)
         env:
-          BASE_URL: ${{ secrets.BASE_URL || 'https://parabank.parasoft.com/parabank' }}
-          PARABANK_USER: ${{ secrets.PARABANK_USER || '' }}
-          PARABANK_PASSWORD: ${{ secrets.PARABANK_PASSWORD || '' }}
-          CUSTOMER_ID: ${{ secrets.CUSTOMER_ID || '12212' }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          PARABANK_USER: ${{ secrets.PARABANK_USER }}
+          PARABANK_PASSWORD: ${{ secrets.PARABANK_PASSWORD }}
+          CUSTOMER_ID: ${{ secrets.CUSTOMER_ID }} # 없어도 되는 값이면 아예 빼는 게 안전
+          AUTH_STATE_PATH: ${{ env.AUTH_STATE_PATH }}
         run: |
-          npx playwright test \
-            --project="${{ matrix.browser }}"
+          npx playwright test --project="${{ matrix.browser }}"
 
       - name: Upload HTML report
         if: always()

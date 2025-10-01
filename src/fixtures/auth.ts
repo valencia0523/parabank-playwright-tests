@@ -19,6 +19,7 @@ function ensureDirFor(filePath: string) {
 
 // Fail early if credentials are not set
 function assertEnv() {
+  if (!BASE_URL) throw new Error('Missing BASE_URL');
   if (!USERNAME || !PASSWORD) {
     throw new Error('Missing credentials: Create credentials in .env');
   }
